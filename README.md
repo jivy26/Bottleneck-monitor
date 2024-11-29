@@ -2,8 +2,6 @@
 
 A real-time performance monitoring tool for Windows that helps detect bottlenecks and optimize gaming performance. Monitor CPU, GPU, RAM usage, FPS, frame times, and network performance in real-time with a modern dark-themed interface.
 
-![PC Performance Monitor Screenshot](resources/screenshot.png)
-
 ## Repository
 
 https://github.com/YOUR_USERNAME/pc-performance-monitor
@@ -45,11 +43,11 @@ https://github.com/YOUR_USERNAME/pc-performance-monitor
 ### Build Instructions
 1. Clone the repository:
 ```bash
-git clone https://github.com/jivy26/pcmonitor.git
+git clone https://github.com/jivy26/Bottleneck-monitor.git
 ```
 2. Navigate to the project directory:
 ```bash
-cd pcmonitor
+cd Bottleneck-monitor
 ```
 3. Install dependencies:
 ```bash
