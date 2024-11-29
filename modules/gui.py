@@ -10,6 +10,7 @@ from .game_optimizer import GameOptimizer
 from .network_monitor import NetworkMonitor
 from .input_monitor import InputMonitor
 from .frame_analyzer import FrameAnalyzer
+import logger
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -86,7 +87,6 @@ class MainWindow(QMainWindow):
         top_layout.addWidget(refresh_button)
         top_layout.addStretch()
         
-        # Initial process list population
         self.refresh_process_list()
         
         return top_layout
@@ -95,10 +95,8 @@ class MainWindow(QMainWindow):
         """Refresh the list of running processes"""
         current_pid = self.process_selector.currentData()
         
-        # Get running games
         games = self.process_monitor.get_running_games()
         
-        # Clear and repopulate the combo box
         self.process_selector.clear()
         for game in games:
             self.process_selector.addItem(game['name'], game['pid'])
@@ -168,11 +166,9 @@ class MainWindow(QMainWindow):
         """)
         panel_layout = QVBoxLayout(panel)
         
-        # Frame Time Analysis Section
         frame_time_group = QWidget()
         frame_time_layout = QVBoxLayout(frame_time_group)
         
-        # Title for the section
         title = QLabel("Frame Time Analysis")
         title.setStyleSheet("""
             QLabel {
@@ -235,7 +231,6 @@ class MainWindow(QMainWindow):
                 }
             """)
             
-            # Style the value
             metric_data['value'].setStyleSheet("""
                 QLabel {
                     color: #ffffff;
@@ -244,19 +239,16 @@ class MainWindow(QMainWindow):
                 }
             """)
             
-            # Add to container
             container_layout.addWidget(metric_data['label'])
             container_layout.addWidget(metric_data['value'])
             container_layout.addStretch()
             
-            # Add container to grid
             metrics_grid.addWidget(container, row, 0)
             row += 1
         
         frame_time_layout.addLayout(metrics_grid)
         panel_layout.addWidget(frame_time_group)
         
-        # Add performance tips section
         tips_widget = QWidget()
         tips_layout = QVBoxLayout(tips_widget)
         
@@ -291,7 +283,6 @@ class MainWindow(QMainWindow):
         panel_layout.addWidget(tips_widget)
         panel_layout.addStretch()
         
-        # Add panel to main layout
         layout.addWidget(panel)
         
         return widget
@@ -300,7 +291,6 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout(widget)
         
-        # Create a dark background panel
         panel = QWidget()
         panel.setStyleSheet("""
             QWidget {
@@ -316,11 +306,9 @@ class MainWindow(QMainWindow):
         """)
         panel_layout = QVBoxLayout(panel)
         
-        # Network Metrics Section
         network_group = QWidget()
         network_layout = QVBoxLayout(network_group)
         
-        # Title
         title = QLabel("Network Analysis")
         title.setStyleSheet("""
             QLabel {
@@ -333,7 +321,6 @@ class MainWindow(QMainWindow):
         """)
         network_layout.addWidget(title)
         
-        # Grid for metrics
         metrics_grid = QGridLayout()
         metrics_grid.setSpacing(20)
         
@@ -352,10 +339,8 @@ class MainWindow(QMainWindow):
             }
         }
         
-        # Add metrics to grid
         row = 0
         for metric_key, metric_data in self.network_metrics.items():
-            # Container for each metric
             container = QWidget()
             container.setStyleSheet("""
                 QWidget {
@@ -366,16 +351,13 @@ class MainWindow(QMainWindow):
             """)
             container_layout = QHBoxLayout(container)
             
-            # Style the label and value
             metric_data['label'].setStyleSheet("QLabel { color: #aaaaaa; font-size: 14px; }")
             metric_data['value'].setStyleSheet("QLabel { color: #ffffff; font-size: 16px; font-weight: bold; }")
             
-            # Add to container
             container_layout.addWidget(metric_data['label'])
             container_layout.addWidget(metric_data['value'])
             container_layout.addStretch()
             
-            # Add container to grid
             metrics_grid.addWidget(container, row, 0)
             row += 1
         
@@ -416,7 +398,6 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout(widget)
         
-        # Create a dark background panel
         panel = QWidget()
         panel.setStyleSheet("""
             QWidget {
@@ -432,11 +413,9 @@ class MainWindow(QMainWindow):
         """)
         panel_layout = QVBoxLayout(panel)
         
-        # Optimization Tips Section
         tips_group = QWidget()
         tips_layout = QVBoxLayout(tips_group)
         
-        # Title
         title = QLabel("Optimization Recommendations")
         title.setStyleSheet("""
             QLabel {
@@ -504,7 +483,6 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout(widget)
         
-        # Create a dark background panel
         panel = QWidget()
         panel.setStyleSheet("""
             QWidget {
@@ -520,7 +498,6 @@ class MainWindow(QMainWindow):
         """)
         panel_layout = QVBoxLayout(panel)
         
-        # Title
         title = QLabel("About PC Performance Monitor")
         title.setStyleSheet("""
             QLabel {
@@ -533,7 +510,6 @@ class MainWindow(QMainWindow):
         """)
         panel_layout.addWidget(title)
         
-        # Version info container
         info_container = QWidget()
         info_container.setStyleSheet("""
             QWidget {
@@ -584,33 +560,26 @@ class MainWindow(QMainWindow):
         pid = self.process_selector.currentData()
         process_name = self.process_selector.currentText()
         
-        # Get all metrics
         process_metrics = self.process_monitor.get_process_metrics(pid)
         system_metrics = self.performance_metrics.get_system_metrics()
         
         if process_metrics and system_metrics:
-            # Update graphs first (preserve working functionality)
             self.graphs.update_graphs(process_metrics, system_metrics)
             
-            # Update basic metrics
             self.update_basic_metrics(process_metrics, system_metrics)
             
-            # Calculate and update frame analysis
             if process_metrics['fps'] > 0:
                 frame_time = 1000.0 / process_metrics['fps']  # Convert to milliseconds
                 frame_analysis = self.frame_analyzer.analyze_frame_times(frame_time)
                 self.update_frame_metrics(frame_analysis)
             
-            # Update network metrics if available
             network_metrics = self.network_monitor.get_process_network_metrics(pid)
             if network_metrics:
                 self.update_network_metrics(network_metrics)
             
-            # Update optimization tips
             tips = self.game_optimizer.get_optimization_tips(process_name, process_metrics)
             self.update_optimization_tips(tips)
             
-            # Update input lag if window handle available
             if hasattr(process_metrics, 'hwnd'):
                 input_lag = self.input_monitor.measure_input_lag(process_metrics['hwnd'])
                 if input_lag:
@@ -619,49 +588,40 @@ class MainWindow(QMainWindow):
     def update_basic_metrics(self, process_metrics, system_metrics):
         """Update the basic metrics display"""
         try:
-            # Update FPS
             self.metrics_labels['fps'].setText(f"FPS: {process_metrics['fps']}")
             
-            # Update CPU metrics
             cpu_info = system_metrics['cpu']
             self.metrics_labels['cpu'].setText(f"CPU Usage: {process_metrics['cpu_percent']:.1f}%")
             self.metrics_labels['cpu_temp'].setText(f"CPU Temp: {cpu_info['temperature']:.1f}°C")
             
-            # Update GPU metrics
             gpu_info = system_metrics.get('gpu', {})
             self.metrics_labels['gpu'].setText(f"GPU Usage: {gpu_info.get('utilization', 0):.1f}%")
             self.metrics_labels['gpu_temp'].setText(f"GPU Temp: {gpu_info.get('temperature', 0):.1f}°C")
             
-            # Update RAM usage - Fix memory display
             memory_info = system_metrics.get('memory', {})
             memory_percent = memory_info.get('percent', process_metrics['memory_percent'])
             self.metrics_labels['ram'].setText(f"RAM Usage: {memory_percent:.1f}%")
             
-            # Calculate frame time from FPS
             if process_metrics['fps'] > 0:
-                frame_time = 1000.0 / process_metrics['fps']  # Convert to milliseconds
+                frame_time = 1000.0 / process_metrics['fps']  
                 self.metrics_labels['frame_time'].setText(f"Frame Time: {frame_time:.1f}ms")
             else:
                 self.metrics_labels['frame_time'].setText("Frame Time: --")
             
-            # Get bottleneck analysis
             bottleneck = self.bottleneck_analyzer.analyze(process_metrics, system_metrics)
             if bottleneck.exists:
                 self.metrics_labels['bottleneck'].setText(
                     f"Bottleneck: {bottleneck.component} ({bottleneck.severity*100:.0f}%)"
                 )
-                # Set red color for bottleneck warning
                 self.metrics_labels['bottleneck'].setStyleSheet(
                     "QLabel { color: #ff4444; font-size: 14px; font-weight: bold; }"
                 )
             else:
                 self.metrics_labels['bottleneck'].setText("Bottleneck: None")
-                # Set green color for no bottleneck
                 self.metrics_labels['bottleneck'].setStyleSheet(
                     "QLabel { color: #44ff44; font-size: 14px; }"
                 )
             
-            # Update frame pacing status
             if hasattr(process_metrics, 'frame_time'):
                 frame_analysis = self.frame_analyzer.analyze_frame_times(process_metrics['frame_time'])
                 self.metrics_labels['frame_pacing'].setText(f"Frame Pacing: {frame_analysis['frame_pacing']}")
@@ -672,33 +632,30 @@ class MainWindow(QMainWindow):
     def update_frame_metrics(self, frame_analysis):
         """Update the frame metrics display"""
         try:
-            # Update values with color coding
             for key, metric_data in self.frame_metrics.items():
                 if key in frame_analysis:
                     value = frame_analysis[key]
                     
-                    # Format value based on metric type
                     if key == 'stutters':
                         formatted_value = str(int(value))
                         # Color code based on stutter count
                         if value == 0:
-                            color = "#44ff44"  # Green
+                            color = "#44ff44"
                         elif value < 5:
-                            color = "#ffff44"  # Yellow
+                            color = "#ffff44"
                         else:
-                            color = "#ff4444"  # Red
+                            color = "#ff4444"
                     else:
                         formatted_value = f"{value:.2f}{metric_data['unit']}"
-                        # Color code based on frame time thresholds
                         if key in ['avg_frame_time', '1%_low', '0.1%_low']:
-                            if value < 16.7:  # Better than 60 FPS
-                                color = "#44ff44"  # Green
-                            elif value < 33.3:  # Better than 30 FPS
-                                color = "#ffff44"  # Yellow
+                            if value < 16.7:  
+                                color = "#44ff44"
+                            elif value < 33.3:
+                                color = "#ffff44" 
                             else:
-                                color = "#ff4444"  # Red
+                                color = "#ff4444"
                         else:
-                            color = "#ffffff"  # Default white
+                            color = "#ffffff" 
                     
                     metric_data['value'].setText(formatted_value)
                     metric_data['value'].setStyleSheet(f"""
@@ -714,12 +671,10 @@ class MainWindow(QMainWindow):
         
     def update_network_metrics(self, network_metrics):
         if network_metrics:
-            # Update basic metrics
             self.network_metrics['bytes_sent']['value'].setText(f"{network_metrics['bytes_sent']/1024:.1f} KB/s")
             self.network_metrics['bytes_recv']['value'].setText(f"{network_metrics['bytes_recv']/1024:.1f} KB/s")
             self.network_metrics['connections']['value'].setText(str(network_metrics['active_connections']))
             
-            # Update server list
             servers = network_metrics.get('servers', [])
             if servers:
                 server_text = "\n".join([f"• {s['hostname']} ({s['ip']}:{s['port']})" for s in servers])
@@ -728,11 +683,9 @@ class MainWindow(QMainWindow):
                 self.servers_list.setText("No active connections")
         
     def update_optimization_tips(self, tips):
-        # Clear old tips
         for label in self.optimization_labels:
             label.setText("")
             
-        # Add new tips
         for i, tip in enumerate(tips):
             if i < len(self.optimization_labels):
                 self.optimization_labels[i].setText(f"• {tip}")
