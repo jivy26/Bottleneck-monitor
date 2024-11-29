@@ -2,8 +2,6 @@
 
 A real-time performance monitoring tool for Windows that helps detect bottlenecks and optimize gaming performance. Monitor CPU, GPU, RAM usage, FPS, frame times, and network performance in real-time with a modern dark-themed interface.
 
-![PC Performance Monitor Screenshot](resources/screenshot.png)
-
 ## Repository
 
 https://github.com/YOUR_USERNAME/pc-performance-monitor
