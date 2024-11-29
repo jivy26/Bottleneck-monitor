@@ -1,0 +1,8 @@
+psutil>=5.9.0
+PyQt6>=6.4.0
+pyqtgraph>=0.13.1
+wmi>=1.5.1
+numpy>=1.21.0
+pygame>=2.5.0
+pywin32>=305 
+logger>=1.4.0
