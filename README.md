@@ -43,11 +43,11 @@ https://github.com/YOUR_USERNAME/pc-performance-monitor
 ### Build Instructions
 1. Clone the repository:
 ```bash
-git clone https://github.com/jivy26/pcmonitor.git
+git clone https://github.com/jivy26/Bottleneck-monitor.git
 ```
 2. Navigate to the project directory:
 ```bash
-cd pcmonitor
+cd Bottleneck-monitor
 ```
 3. Install dependencies:
 ```bash
